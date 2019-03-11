@@ -1,0 +1,48 @@
++--------+-----------+-----------------------------------+-----------------------+------------------------------------------------------------------------+--------------+
+| Domain | Method    | URI                               | Name                  | Action                                                                 | Middleware   |
++--------+-----------+-----------------------------------+-----------------------+------------------------------------------------------------------------+--------------+
+|        | GET|HEAD  | /                                 |                       | Closure                                                                | web          |
+|        | GET|HEAD  | api/user                          |                       | Closure                                                                | api,auth:api |
+|        | GET|HEAD  | colaboradores                     | colaboradores.index   | App\Http\Controllers\Investigador\ColaboradoresController@index        | web          |
+|        | POST      | colaboradores                     | colaboradores.store   | App\Http\Controllers\Investigador\ColaboradoresController@store        | web          |
+|        | GET|HEAD  | colaboradores/create              | colaboradores.create  | App\Http\Controllers\Investigador\ColaboradoresController@create       | web          |
+|        | GET|HEAD  | colaboradores/{colaboradore}      | colaboradores.show    | App\Http\Controllers\Investigador\ColaboradoresController@show         | web          |
+|        | PUT|PATCH | colaboradores/{colaboradore}      | colaboradores.update  | App\Http\Controllers\Investigador\ColaboradoresController@update       | web          |
+|        | DELETE    | colaboradores/{colaboradore}      | colaboradores.destroy | App\Http\Controllers\Investigador\ColaboradoresController@destroy      | web          |
+|        | GET|HEAD  | colaboradores/{colaboradore}/edit | colaboradores.edit    | App\Http\Controllers\Investigador\ColaboradoresController@edit         | web          |
+|        | GET|HEAD  | convocatoria                      | convocatoria.index    | App\Http\Controllers\Coordinador\ConvocatoriaController@index          | web          |
+|        | POST      | convocatoria                      | convocatoria.store    | App\Http\Controllers\Coordinador\ConvocatoriaController@store          | web          |
+|        | GET|HEAD  | convocatoria/create               | convocatoria.create   | App\Http\Controllers\Coordinador\ConvocatoriaController@create         | web          |
+|        | DELETE    | convocatoria/{convocatorium}      | convocatoria.destroy  | App\Http\Controllers\Coordinador\ConvocatoriaController@destroy        | web          |
+|        | PUT|PATCH | convocatoria/{convocatorium}      | convocatoria.update   | App\Http\Controllers\Coordinador\ConvocatoriaController@update         | web          |
+|        | GET|HEAD  | convocatoria/{convocatorium}      | convocatoria.show     | App\Http\Controllers\Coordinador\ConvocatoriaController@show           | web          |
+|        | GET|HEAD  | convocatoria/{convocatorium}/edit | convocatoria.edit     | App\Http\Controllers\Coordinador\ConvocatoriaController@edit           | web          |
+|        | GET|HEAD  | datos                             | datos.index           | App\Http\Controllers\Investigador\DatosController@index                | web          |
+|        | POST      | datos                             | datos.store           | App\Http\Controllers\Investigador\DatosController@store                | web          |
+|        | GET|HEAD  | datos/create                      | datos.create          | App\Http\Controllers\Investigador\DatosController@create               | web          |
+|        | DELETE    | datos/{dato}                      | datos.destroy         | App\Http\Controllers\Investigador\DatosController@destroy              | web          |
+|        | PUT|PATCH | datos/{dato}                      | datos.update          | App\Http\Controllers\Investigador\DatosController@update               | web          |
+|        | GET|HEAD  | datos/{dato}                      | datos.show            | App\Http\Controllers\Investigador\DatosController@show                 | web          |
+|        | GET|HEAD  | datos/{dato}/edit                 | datos.edit            | App\Http\Controllers\Investigador\DatosController@edit                 | web          |
+|        | GET|HEAD  | home                              | home                  | App\Http\Controllers\HomeController@index                              | web,auth     |
+|        | GET|HEAD  | login                             | login                 | App\Http\Controllers\Auth\LoginController@showLoginForm                | web,guest    |
+|        | POST      | login                             |                       | App\Http\Controllers\Auth\LoginController@login                        | web,guest    |
+|        | POST      | logout                            | logout                | App\Http\Controllers\Auth\LoginController@logout                       | web          |
+|        | POST      | password/email                    | password.email        | App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail  | web,guest    |
+|        | POST      | password/reset                    |                       | App\Http\Controllers\Auth\ResetPasswordController@reset                | web,guest    |
+|        | GET|HEAD  | password/reset                    | password.request      | App\Http\Controllers\Auth\ForgotPasswordController@showLinkRequestForm | web,guest    |
+|        | GET|HEAD  | password/reset/{token}            | password.reset        | App\Http\Controllers\Auth\ResetPasswordController@showResetForm        | web,guest    |
+|        | POST      | proyecto                          | proyecto.store        | App\Http\Controllers\Investigador\ProyectoController@store             | web,auth     |
+|        | GET|HEAD  | proyecto                          | proyecto.index        | App\Http\Controllers\Investigador\ProyectoController@index             | web,auth     |
+|        | GET|HEAD  | proyecto/create                   | proyecto.create       | App\Http\Controllers\Investigador\ProyectoController@create            | web,auth     |
+|        | GET|HEAD  | proyecto/especial                 | pryecto.especial      | App\Http\Controllers\Investigador\ProyectoController@especial          | web,auth     |
+|        | DELETE    | proyecto/{proyecto}               | proyecto.destroy      | App\Http\Controllers\Investigador\ProyectoController@destroy           | web,auth     |
+|        | GET|HEAD  | proyecto/{proyecto}               | proyecto.show         | App\Http\Controllers\Investigador\ProyectoController@show              | web,auth     |
+|        | PUT|PATCH | proyecto/{proyecto}               | proyecto.update       | App\Http\Controllers\Investigador\ProyectoController@update            | web,auth     |
+|        | GET|HEAD  | proyecto/{proyecto}/edit          | proyecto.edit         | App\Http\Controllers\Investigador\ProyectoController@edit              | web,auth     |
+|        | POST      | proyectoespecial                  | pryectoespecial       | App\Http\Controllers\Investigador\ProyectoController@sespecial         | web,auth     |
+|        | GET|HEAD  | register                          | register              | App\Http\Controllers\Auth\RegisterController@showRegistrationForm      | web,guest    |
+|        | POST      | register                          |                       | App\Http\Controllers\Auth\RegisterController@register                  | web,guest    |
+|        | GET|HEAD  | registrados                       |                       | App\Http\Controllers\Coordinador\IntegracionController@registrados     | web          |
+|        | GET|HEAD  | {fallbackPlaceholder}             |                       | Closure                                                                | web          |
++--------+-----------+-----------------------------------+-----------------------+------------------------------------------------------------------------+--------------+

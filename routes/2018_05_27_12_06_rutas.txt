@@ -1,0 +1,38 @@
++--------+-----------+-----------------------------------+----------------------+------------------------------------------------------------------------+--------------+
+| Domain | Method    | URI                               | Name                 | Action                                                                 | Middleware   |
++--------+-----------+-----------------------------------+----------------------+------------------------------------------------------------------------+--------------+
+|        | GET|HEAD  | /                                 |                      | Closure                                                                | web          |
+|        | GET|HEAD  | api/user                          |                      | Closure                                                                | api,auth:api |
+|        | POST      | convocatoria                      | convocatoria.store   | App\Http\Controllers\ConvocatoriaController@store                      | web          |
+|        | GET|HEAD  | convocatoria                      | convocatoria.index   | App\Http\Controllers\ConvocatoriaController@index                      | web          |
+|        | GET|HEAD  | convocatoria/create               | convocatoria.create  | App\Http\Controllers\ConvocatoriaController@create                     | web          |
+|        | GET|HEAD  | convocatoria/{convocatorium}      | convocatoria.show    | App\Http\Controllers\ConvocatoriaController@show                       | web          |
+|        | PUT|PATCH | convocatoria/{convocatorium}      | convocatoria.update  | App\Http\Controllers\ConvocatoriaController@update                     | web          |
+|        | DELETE    | convocatoria/{convocatorium}      | convocatoria.destroy | App\Http\Controllers\ConvocatoriaController@destroy                    | web          |
+|        | GET|HEAD  | convocatoria/{convocatorium}/edit | convocatoria.edit    | App\Http\Controllers\ConvocatoriaController@edit                       | web          |
+|        | GET|HEAD  | datos                             | datos.index          | App\Http\Controllers\DatosController@index                             | web          |
+|        | POST      | datos                             | datos.store          | App\Http\Controllers\DatosController@store                             | web          |
+|        | GET|HEAD  | datos/create                      | datos.create         | App\Http\Controllers\DatosController@create                            | web          |
+|        | GET|HEAD  | datos/{dato}                      | datos.show           | App\Http\Controllers\DatosController@show                              | web          |
+|        | PUT|PATCH | datos/{dato}                      | datos.update         | App\Http\Controllers\DatosController@update                            | web          |
+|        | DELETE    | datos/{dato}                      | datos.destroy        | App\Http\Controllers\DatosController@destroy                           | web          |
+|        | GET|HEAD  | datos/{dato}/edit                 | datos.edit           | App\Http\Controllers\DatosController@edit                              | web          |
+|        | GET|HEAD  | home                              | home                 | App\Http\Controllers\HomeController@index                              | web,auth     |
+|        | GET|HEAD  | login                             | login                | App\Http\Controllers\Auth\LoginController@showLoginForm                | web,guest    |
+|        | POST      | login                             |                      | App\Http\Controllers\Auth\LoginController@login                        | web,guest    |
+|        | POST      | logout                            | logout               | App\Http\Controllers\Auth\LoginController@logout                       | web          |
+|        | POST      | password/email                    | password.email       | App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail  | web,guest    |
+|        | POST      | password/reset                    |                      | App\Http\Controllers\Auth\ResetPasswordController@reset                | web,guest    |
+|        | GET|HEAD  | password/reset                    | password.request     | App\Http\Controllers\Auth\ForgotPasswordController@showLinkRequestForm | web,guest    |
+|        | GET|HEAD  | password/reset/{token}            | password.reset       | App\Http\Controllers\Auth\ResetPasswordController@showResetForm        | web,guest    |
+|        | GET|HEAD  | proyecto                          | proyecto.index       | App\Http\Controllers\ProyectoController@index                          | web          |
+|        | POST      | proyecto                          | proyecto.store       | App\Http\Controllers\ProyectoController@store                          | web          |
+|        | GET|HEAD  | proyecto/create                   | proyecto.create      | App\Http\Controllers\ProyectoController@create                         | web          |
+|        | DELETE    | proyecto/{proyecto}               | proyecto.destroy     | App\Http\Controllers\ProyectoController@destroy                        | web          |
+|        | PUT|PATCH | proyecto/{proyecto}               | proyecto.update      | App\Http\Controllers\ProyectoController@update                         | web          |
+|        | GET|HEAD  | proyecto/{proyecto}               | proyecto.show        | App\Http\Controllers\ProyectoController@show                           | web          |
+|        | GET|HEAD  | proyecto/{proyecto}/edit          | proyecto.edit        | App\Http\Controllers\ProyectoController@edit                           | web          |
+|        | GET|HEAD  | register                          | register             | App\Http\Controllers\Auth\RegisterController@showRegistrationForm      | web,guest    |
+|        | POST      | register                          |                      | App\Http\Controllers\Auth\RegisterController@register                  | web,guest    |
+|        | GET|HEAD  | registrados                       |                      | App\Http\Controllers\IntegracionController@registrados                 | web          |
++--------+-----------+-----------------------------------+----------------------+------------------------------------------------------------------------+--------------+

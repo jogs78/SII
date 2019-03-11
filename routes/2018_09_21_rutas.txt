@@ -1,0 +1,132 @@
++--------+-----------+-------------------------------------------------------+--------------------------------+-------------------------------------------------------------------------+-----------------------+
+| Domain | Method    | URI                                                   | Name                           | Action                                                                  | Middleware            |
++--------+-----------+-------------------------------------------------------+--------------------------------+-------------------------------------------------------------------------+-----------------------+
+|        | GET|HEAD  | /                                                     |                                | Closure                                                                 | web                   |
+|        | GET|HEAD  | api/user                                              |                                | Closure                                                                 | api,auth:api          |
+|        | POST      | aval                                                  |                                | App\Http\Controllers\Investigador\AvalController@agregar                | web,role:Investigador |
+|        | POST      | aval/eliminar                                         |                                | App\Http\Controllers\Investigador\AvalController@eliminar               | web,role:Investigador |
+|        | GET|HEAD  | aval/{idpro}                                          |                                | App\Http\Controllers\Investigador\AvalController@mostrar                | web,role:Investigador |
+|        | POST      | colaboradores                                         |                                | App\Http\Controllers\Investigador\ColaboradoresController@invitar       | web,role:Investigador |
+|        | POST      | colaboradores/aceptar                                 |                                | App\Http\Controllers\Investigador\ColaboradoresController@aceptar       | web,role:Investigador |
+|        | POST      | colaboradores/desinvitar                              |                                | App\Http\Controllers\Investigador\ColaboradoresController@desinvitar    | web,role:Investigador |
+|        | POST      | colaboradores/rechazar                                |                                | App\Http\Controllers\Investigador\ColaboradoresController@rechazar      | web,role:Investigador |
+|        | GET|HEAD  | colaboradores/{idpro}                                 |                                | App\Http\Controllers\Investigador\ColaboradoresController@index         | web,role:Investigador |
+|        | POST      | convocatoria                                          | convocatoria.store             | App\Http\Controllers\Coordinador\ConvocatoriaController@store           | web,role:Coordinador  |
+|        | GET|HEAD  | convocatoria                                          | convocatoria.index             | App\Http\Controllers\Coordinador\ConvocatoriaController@index           | web,role:Coordinador  |
+|        | GET|HEAD  | convocatoria/create                                   | convocatoria.create            | App\Http\Controllers\Coordinador\ConvocatoriaController@create          | web,role:Coordinador  |
+|        | DELETE    | convocatoria/{convocatorium}                          | convocatoria.destroy           | App\Http\Controllers\Coordinador\ConvocatoriaController@destroy         | web,role:Coordinador  |
+|        | PUT|PATCH | convocatoria/{convocatorium}                          | convocatoria.update            | App\Http\Controllers\Coordinador\ConvocatoriaController@update          | web,role:Coordinador  |
+|        | GET|HEAD  | convocatoria/{convocatorium}                          | convocatoria.show              | App\Http\Controllers\Coordinador\ConvocatoriaController@show            | web,role:Coordinador  |
+|        | GET|HEAD  | convocatoria/{convocatorium}/edit                     | convocatoria.edit              | App\Http\Controllers\Coordinador\ConvocatoriaController@edit            | web,role:Coordinador  |
+|        | POST      | cronograma                                            |                                | App\Http\Controllers\Investigador\CronogramaController@agregar          | web,role:Investigador |
+|        | POST      | cronograma/eliminar                                   |                                | App\Http\Controllers\Investigador\CronogramaController@eliminar         | web,role:Investigador |
+|        | GET|HEAD  | cronograma/{idpro}                                    |                                | App\Http\Controllers\Investigador\CronogramaController@index            | web,role:Investigador |
+|        | POST      | crudadscripcion                                       | crudadscripcion.store          | App\Http\Controllers\Coordinador\CrudAdscripcionController@store        | web,role:Coordinador  |
+|        | GET|HEAD  | crudadscripcion                                       | crudadscripcion.index          | App\Http\Controllers\Coordinador\CrudAdscripcionController@index        | web,role:Coordinador  |
+|        | GET|HEAD  | crudadscripcion/create                                | crudadscripcion.create         | App\Http\Controllers\Coordinador\CrudAdscripcionController@create       | web,role:Coordinador  |
+|        | GET|HEAD  | crudadscripcion/{crudadscripcion}                     | crudadscripcion.show           | App\Http\Controllers\Coordinador\CrudAdscripcionController@show         | web,role:Coordinador  |
+|        | PUT|PATCH | crudadscripcion/{crudadscripcion}                     | crudadscripcion.update         | App\Http\Controllers\Coordinador\CrudAdscripcionController@update       | web,role:Coordinador  |
+|        | DELETE    | crudadscripcion/{crudadscripcion}                     | crudadscripcion.destroy        | App\Http\Controllers\Coordinador\CrudAdscripcionController@destroy      | web,role:Coordinador  |
+|        | GET|HEAD  | crudadscripcion/{crudadscripcion}/edit                | crudadscripcion.edit           | App\Http\Controllers\Coordinador\CrudAdscripcionController@edit         | web,role:Coordinador  |
+|        | GET|HEAD  | crudareas                                             | crudareas.index                | App\Http\Controllers\Coordinador\CrudAreasController@index              | web,role:Coordinador  |
+|        | POST      | crudareas                                             | crudareas.store                | App\Http\Controllers\Coordinador\CrudAreasController@store              | web,role:Coordinador  |
+|        | GET|HEAD  | crudareas/create                                      | crudareas.create               | App\Http\Controllers\Coordinador\CrudAreasController@create             | web,role:Coordinador  |
+|        | PUT|PATCH | crudareas/{crudarea}                                  | crudareas.update               | App\Http\Controllers\Coordinador\CrudAreasController@update             | web,role:Coordinador  |
+|        | DELETE    | crudareas/{crudarea}                                  | crudareas.destroy              | App\Http\Controllers\Coordinador\CrudAreasController@destroy            | web,role:Coordinador  |
+|        | GET|HEAD  | crudareas/{crudarea}                                  | crudareas.show                 | App\Http\Controllers\Coordinador\CrudAreasController@show               | web,role:Coordinador  |
+|        | GET|HEAD  | crudareas/{crudarea}/edit                             | crudareas.edit                 | App\Http\Controllers\Coordinador\CrudAreasController@edit               | web,role:Coordinador  |
+|        | POST      | crudentregables                                       | crudentregables.store          | App\Http\Controllers\Coordinador\CrudEntregablesController@store        | web,role:Coordinador  |
+|        | GET|HEAD  | crudentregables                                       | crudentregables.index          | App\Http\Controllers\Coordinador\CrudEntregablesController@index        | web,role:Coordinador  |
+|        | GET|HEAD  | crudentregables/create                                | crudentregables.create         | App\Http\Controllers\Coordinador\CrudEntregablesController@create       | web,role:Coordinador  |
+|        | DELETE    | crudentregables/{crudentregable}                      | crudentregables.destroy        | App\Http\Controllers\Coordinador\CrudEntregablesController@destroy      | web,role:Coordinador  |
+|        | GET|HEAD  | crudentregables/{crudentregable}                      | crudentregables.show           | App\Http\Controllers\Coordinador\CrudEntregablesController@show         | web,role:Coordinador  |
+|        | PUT|PATCH | crudentregables/{crudentregable}                      | crudentregables.update         | App\Http\Controllers\Coordinador\CrudEntregablesController@update       | web,role:Coordinador  |
+|        | GET|HEAD  | crudentregables/{crudentregable}/edit                 | crudentregables.edit           | App\Http\Controllers\Coordinador\CrudEntregablesController@edit         | web,role:Coordinador  |
+|        | GET|HEAD  | crudgastos                                            | crudgastos.index               | App\Http\Controllers\Coordinador\CrudGastosController@index             | web,role:Coordinador  |
+|        | POST      | crudgastos                                            | crudgastos.store               | App\Http\Controllers\Coordinador\CrudGastosController@store             | web,role:Coordinador  |
+|        | GET|HEAD  | crudgastos/create                                     | crudgastos.create              | App\Http\Controllers\Coordinador\CrudGastosController@create            | web,role:Coordinador  |
+|        | PUT|PATCH | crudgastos/{crudgasto}                                | crudgastos.update              | App\Http\Controllers\Coordinador\CrudGastosController@update            | web,role:Coordinador  |
+|        | GET|HEAD  | crudgastos/{crudgasto}                                | crudgastos.show                | App\Http\Controllers\Coordinador\CrudGastosController@show              | web,role:Coordinador  |
+|        | DELETE    | crudgastos/{crudgasto}                                | crudgastos.destroy             | App\Http\Controllers\Coordinador\CrudGastosController@destroy           | web,role:Coordinador  |
+|        | GET|HEAD  | crudgastos/{crudgasto}/edit                           | crudgastos.edit                | App\Http\Controllers\Coordinador\CrudGastosController@edit              | web,role:Coordinador  |
+|        | POST      | crudinvestigacion                                     | crudinvestigacion.store        | App\Http\Controllers\Coordinador\CrudInvestigacionsController@store     | web,role:Coordinador  |
+|        | GET|HEAD  | crudinvestigacion                                     | crudinvestigacion.index        | App\Http\Controllers\Coordinador\CrudInvestigacionsController@index     | web,role:Coordinador  |
+|        | GET|HEAD  | crudinvestigacion/create                              | crudinvestigacion.create       | App\Http\Controllers\Coordinador\CrudInvestigacionsController@create    | web,role:Coordinador  |
+|        | DELETE    | crudinvestigacion/{crudinvestigacion}                 | crudinvestigacion.destroy      | App\Http\Controllers\Coordinador\CrudInvestigacionsController@destroy   | web,role:Coordinador  |
+|        | PUT|PATCH | crudinvestigacion/{crudinvestigacion}                 | crudinvestigacion.update       | App\Http\Controllers\Coordinador\CrudInvestigacionsController@update    | web,role:Coordinador  |
+|        | GET|HEAD  | crudinvestigacion/{crudinvestigacion}                 | crudinvestigacion.show         | App\Http\Controllers\Coordinador\CrudInvestigacionsController@show      | web,role:Coordinador  |
+|        | GET|HEAD  | crudinvestigacion/{crudinvestigacion}/edit            | crudinvestigacion.edit         | App\Http\Controllers\Coordinador\CrudInvestigacionsController@edit      | web,role:Coordinador  |
+|        | GET|HEAD  | crudlineas                                            | crudlineas.index               | App\Http\Controllers\Coordinador\CrudLineasController@index             | web,role:Coordinador  |
+|        | POST      | crudlineas                                            | crudlineas.store               | App\Http\Controllers\Coordinador\CrudLineasController@store             | web,role:Coordinador  |
+|        | GET|HEAD  | crudlineas/create                                     | crudlineas.create              | App\Http\Controllers\Coordinador\CrudLineasController@create            | web,role:Coordinador  |
+|        | GET|HEAD  | crudlineas/{crudlinea}                                | crudlineas.show                | App\Http\Controllers\Coordinador\CrudLineasController@show              | web,role:Coordinador  |
+|        | PUT|PATCH | crudlineas/{crudlinea}                                | crudlineas.update              | App\Http\Controllers\Coordinador\CrudLineasController@update            | web,role:Coordinador  |
+|        | DELETE    | crudlineas/{crudlinea}                                | crudlineas.destroy             | App\Http\Controllers\Coordinador\CrudLineasController@destroy           | web,role:Coordinador  |
+|        | GET|HEAD  | crudlineas/{crudlinea}/edit                           | crudlineas.edit                | App\Http\Controllers\Coordinador\CrudLineasController@edit              | web,role:Coordinador  |
+|        | GET|HEAD  | crudlongitudecaracteres                               | crudlongitudecaracteres.index  | App\Http\Controllers\Coordinador\CrudDeLongitudecaracteres@index        | web,role:Coordinador  |
+|        | PUT|PATCH | crudlongitudecaracteres/{crudlongitudecaractere}      | crudlongitudecaracteres.update | App\Http\Controllers\Coordinador\CrudDeLongitudecaracteres@update       | web,role:Coordinador  |
+|        | GET|HEAD  | crudlongitudecaracteres/{crudlongitudecaractere}/edit | crudlongitudecaracteres.edit   | App\Http\Controllers\Coordinador\CrudDeLongitudecaracteres@edit         | web,role:Coordinador  |
+|        | GET|HEAD  | crudpe                                                | crudpe.index                   | App\Http\Controllers\Coordinador\CrudProgramaEducativo@index            | web,role:Coordinador  |
+|        | POST      | crudpe                                                | crudpe.store                   | App\Http\Controllers\Coordinador\CrudProgramaEducativo@store            | web,role:Coordinador  |
+|        | GET|HEAD  | crudpe/create                                         | crudpe.create                  | App\Http\Controllers\Coordinador\CrudProgramaEducativo@create           | web,role:Coordinador  |
+|        | DELETE    | crudpe/{crudpe}                                       | crudpe.destroy                 | App\Http\Controllers\Coordinador\CrudProgramaEducativo@destroy          | web,role:Coordinador  |
+|        | GET|HEAD  | crudpe/{crudpe}                                       | crudpe.show                    | App\Http\Controllers\Coordinador\CrudProgramaEducativo@show             | web,role:Coordinador  |
+|        | PUT|PATCH | crudpe/{crudpe}                                       | crudpe.update                  | App\Http\Controllers\Coordinador\CrudProgramaEducativo@update           | web,role:Coordinador  |
+|        | GET|HEAD  | crudpe/{crudpe}/edit                                  | crudpe.edit                    | App\Http\Controllers\Coordinador\CrudProgramaEducativo@edit             | web,role:Coordinador  |
+|        | GET|HEAD  | crudusers                                             | crudusers.index                | App\Http\Controllers\Coordinador\CrudUsersController@index              | web,role:Coordinador  |
+|        | POST      | crudusers                                             | crudusers.store                | App\Http\Controllers\Coordinador\CrudUsersController@store              | web,role:Coordinador  |
+|        | GET|HEAD  | crudusers/create                                      | crudusers.create               | App\Http\Controllers\Coordinador\CrudUsersController@create             | web,role:Coordinador  |
+|        | PUT|PATCH | crudusers/{cruduser}                                  | crudusers.update               | App\Http\Controllers\Coordinador\CrudUsersController@update             | web,role:Coordinador  |
+|        | DELETE    | crudusers/{cruduser}                                  | crudusers.destroy              | App\Http\Controllers\Coordinador\CrudUsersController@destroy            | web,role:Coordinador  |
+|        | GET|HEAD  | crudusers/{cruduser}                                  | crudusers.show                 | App\Http\Controllers\Coordinador\CrudUsersController@show               | web,role:Coordinador  |
+|        | GET|HEAD  | crudusers/{cruduser}/edit                             | crudusers.edit                 | App\Http\Controllers\Coordinador\CrudUsersController@edit               | web,role:Coordinador  |
+|        | POST      | entregables                                           |                                | App\Http\Controllers\Investigador\EntregablesController@agregar         | web,role:Investigador |
+|        | POST      | entregables/eliminar                                  |                                | App\Http\Controllers\Investigador\EntregablesController@eliminar        | web,role:Investigador |
+|        | GET|HEAD  | entregables/{idpro}                                   |                                | App\Http\Controllers\Investigador\EntregablesController@index           | web,role:Investigador |
+|        | POST      | gastos                                                |                                | App\Http\Controllers\Investigador\GastosController@agregar              | web,role:Investigador |
+|        | POST      | gastos/eliminar                                       |                                | App\Http\Controllers\Investigador\GastosController@eliminar             | web,role:Investigador |
+|        | GET|HEAD  | gastos/{idpro}                                        |                                | App\Http\Controllers\Investigador\GastosController@index                | web,role:Investigador |
+|        | GET|HEAD  | home                                                  | home                           | App\Http\Controllers\HomeController@index                               | web,auth              |
+|        | GET|HEAD  | login                                                 | login                          | App\Http\Controllers\Auth\LoginController@showLoginForm                 | web,guest             |
+|        | POST      | login                                                 |                                | App\Http\Controllers\Auth\LoginController@login                         | web,guest             |
+|        | POST      | logout                                                | logout                         | App\Http\Controllers\Auth\LoginController@logout                        | web                   |
+
+
+
+|        | POST      | password/email                                        | password.email                 | App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail   | web,guest             |
+
+
+
+|        | GET|HEAD  | password/reset                                        | password.request               | App\Http\Controllers\Auth\ForgotPasswordController@showLinkRequestForm  | web,guest             |
+
+|        | POST      | password/reset                                        |                                | App\Http\Controllers\Auth\ResetPasswordController@reset                 | web,guest             |
+|        | GET|HEAD  | password/reset/{token}                                | password.reset                 | App\Http\Controllers\Auth\ResetPasswordController@showResetForm         | web,guest             |
+|        | GET|HEAD  | pdfaval/{idpro}                                       |                                | App\Http\Controllers\DocumentosController@aval                          | web                   |
+|        | GET|HEAD  | pdfci01/{idpro}                                       |                                | App\Http\Controllers\DocumentosController@ci01                          | web                   |
+|        | GET|HEAD  | pdfci02/{idpro}                                       |                                | App\Http\Controllers\DocumentosController@ci02                          | web                   |
+|        | GET|HEAD  | pdfdci01/{idpro}                                      |                                | App\Http\Controllers\DocumentosController@dci01                         | web                   |
+|        | GET|HEAD  | pdfdci02/{idpro}                                      |                                | App\Http\Controllers\DocumentosController@dci02                         | web                   |
+|        | GET|HEAD  | pdfvinc/{idpro}                                       |                                | App\Http\Controllers\DocumentosController@vinculacion                   | web                   |
+|        | GET|HEAD  | protocolo/{idpro}                                     |                                | App\Http\Controllers\Investigador\ProtocoloController@mostar            | web,role:Investigador |
+|        | POST      | protocolo/{idpro}                                     |                                | App\Http\Controllers\Investigador\ProtocoloController@update            | web,role:Investigador |
+|        | GET|HEAD  | proyecto                                              | lstproyectos                   | App\Http\Controllers\Investigador\ProyectoController@index              | web,auth              |
+|        | POST      | proyecto                                              | addproyecto                    | App\Http\Controllers\Investigador\ProyectoController@store              | web,auth              |
+|        | GET|HEAD  | proyecto/create                                       | crtproyecto                    | App\Http\Controllers\Investigador\ProyectoController@create             | web,auth              |
+|        | GET|HEAD  | proyecto/especial                                     | pryecto.especial               | App\Http\Controllers\Investigador\ProyectoController@especial           | web,auth              |
+|        | DELETE    | proyecto/{idpro}                                      | delproyecto                    | App\Http\Controllers\Investigador\ProyectoController@destroy            | web,auth              |
+|        | POST      | proyectoespecial                                      | pryectoespecial                | App\Http\Controllers\Investigador\ProyectoController@sespecial          | web,auth              |
+|        | POST      | register                                              |                                | App\Http\Controllers\Auth\RegisterController@register                   | web,guest             |
+|        | GET|HEAD  | register                                              | register                       | App\Http\Controllers\Auth\RegisterController@showRegistrationForm       | web,guest             |
+|        | GET|HEAD  | registrados                                           |                                | App\Http\Controllers\Coordinador\IntegracionController@registrados      | web,role:Coordinador  |
+
+
+|        | GET|HEAD  | rregistro                                             | rregistro.index                | App\Http\Controllers\Coordinador\RestriccionesRegistroController@index  | web,role:Coordinador  |
+|        | PUT|PATCH | rregistro/{rregistro}                                 | rregistro.update               | App\Http\Controllers\Coordinador\RestriccionesRegistroController@update | web,role:Coordinador  |
+|        | GET|HEAD  | rregistro/{rregistro}/edit                            | rregistro.edit                 | App\Http\Controllers\Coordinador\RestriccionesRegistroController@edit   | web,role:Coordinador  |
+|        | GET|HEAD  | someter/{idpro}                                       |                                | App\Http\Controllers\Investigador\SometerController@someter             | web,role:Investigador |
+|        | POST      | someter/{idpro}                                       |                                | App\Http\Controllers\Investigador\SometerController@update              | web,role:Investigador |
+|        | POST      | vinculacion                                           |                                | App\Http\Controllers\Investigador\VinculacionController@agregar         | web,role:Investigador |
+|        | POST      | vinculacion/eliminar                                  |                                | App\Http\Controllers\Investigador\VinculacionController@eliminar        | web,role:Investigador |
+|        | GET|HEAD  | vinculacion/{idpro}                                   |                                | App\Http\Controllers\Investigador\VinculacionController@mostrar         | web,role:Investigador |
+|        | GET|HEAD  | {fallbackPlaceholder}                                 |                                | Closure                                                                 | web                   |
++--------+-----------+-------------------------------------------------------+--------------------------------+-------------------------------------------------------------------------+-----------------------+

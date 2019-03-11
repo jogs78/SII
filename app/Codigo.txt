@@ -1,0 +1,3223 @@
+--------------./Aval.php--------------
+<?php
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Aval extends Model
+{
+    protected $table='proyecto';
+    public $timestamps =false;
+
+   protected $fillable = [
+         'aval'];
+
+}
+
+--------------./Colaboradores.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Colaboradores extends Model
+{
+    protected $table='colaboradores';
+    public $timestamps =false;
+
+   protected $fillable = [
+         'users_id', 'proyecto_id','participacion'];
+
+	public function proyecto(){
+		return 
+		  $this->belongsTo('App\Models\Proyecto', 'proyecto_id');
+	}
+
+	public function quien(){
+		return 
+		   $this->hasOne('App\Models\User', 'id', 'users_id');
+	}
+	
+}
+
+--------------./Convocatoria.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Convocatoria extends Model
+{
+    protected $table='convocatoria';
+    public $timestamps =false;
+
+
+   protected $fillable = [ 'Nombre', 'Fecha_inicio', 'Fecha_fin'];
+
+	public function proyectos()
+	{
+	    return $this->hasMany('App\Models\Proyecto');
+	}        
+	public function vigente(){
+
+        $ConvocatoriaFechaInicio = new \DateTime($this->Fecha_inicio);
+        $ConvocatoriaFechaFin  = new \DateTime($this->Fecha_fin);
+        $fechaHoy = new \DateTime(); // Today
+        $fechaHoy->format('d/m/Y'); // echos today!
+
+        if(
+          $fechaHoy->getTimestamp() >= $ConvocatoriaFechaInicio->getTimestamp() &&
+          $fechaHoy->getTimestamp() <= $ConvocatoriaFechaFin->getTimestamp() ){
+			return true;
+		}else{
+ 	       return false;
+        }
+
+
+	}
+
+}
+
+--------------./Cronograma.php--------------
+<?php
+/*
+////CRONOGRAMA
+id, actividad, fecha_inicio, fecha_fin, monto, proyecto_id, entregables_id
+
+*/
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Cronograma extends Model
+{
+    protected $table='cronograma';
+    public $timestamps =false;
+
+   protected $fillable = [
+	'actividad', 'fecha_inicio', 'fecha_fin', 'proyecto_id', 'entregables_id'];
+
+	public function entregable(){
+		return 
+		   $this->hasOne('App\Models\Entregables', 'id', 'entregables_id')
+		   ->withDefault( ['descripcion'=>'Sin entregable']);
+		   //id, tipo, cuantos, descripcion, proyecto_id
+	}
+
+	public function gastos()
+	{
+	    return $this->hasMany('App\Models\Gastos');
+	}
+
+	public function total()
+	{
+			$suma=0;
+	    $gastos = $this->gastos;
+      foreach ($gastos as $gasto) {
+        $suma += $gasto->monto;
+      }
+      return $suma;
+	}
+}
+
+--------------./CrudAdscripcion.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class CrudAdscripcion extends Model
+{
+  protected $table='catalogo_ies';
+  protected $fillable = ['ies'];
+    public $timestamps =false;
+}
+
+--------------./CrudCatalagoArea.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+
+class CrudCatalagoArea extends Model
+{
+    protected $table='catalogo_areas';
+    protected $fillable = ['area'];
+      public $timestamps =false;
+
+}
+
+--------------./CrudEntregable.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class CrudEntregable extends Model
+{
+  protected $table='catalogo_entregables';
+  public $timestamps =false;
+
+ protected $fillable = [
+       'descripcion', 'tipo'];
+}
+
+--------------./CrudGastos.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class CrudGastos extends Model
+{
+    protected $table='catalogo_gastos';
+    public $timestamps =false;
+
+
+
+   protected $fillable = [
+         'descripcion', 'partida'];
+
+}
+
+--------------./CrudLineas.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class CrudLineas extends Model
+{
+  protected $table='catalogo_lineas';
+  protected $fillable = ['linea'];
+  public $timestamps =false;
+}
+
+--------------./CrudLongitudCaracteres.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+//para que esta el modelo "RestriccionesL" entonces
+
+class CrudLongitudCaracteres extends Model
+{
+    protected $table='catalogo_restricciones_longitud';
+      protected $fillable = ['valor'];
+        public $timestamps =false;
+}
+
+--------------./CrudTipodeinvestigacion.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class CrudTipodeinvestigacion extends Model
+{
+  protected $table='catalogo_tipo_investigacion';
+  protected $fillable = ['linea'];
+  public $timestamps =false;
+}
+
+--------------./Entregables.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Entregables extends Model
+{
+    protected $table='entregables';
+    public $timestamps =false;
+
+   protected $fillable = [
+         'tipo', 'cuantos', 'descripcion', 'proyecto_id'];
+
+}
+
+--------------./Gastos.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Gastos extends Model
+{
+    protected $table='gastos';
+    public $timestamps =false;
+
+
+
+   protected $fillable = [
+         'descripcion', 'partida', 'monto', 'actividad_id', 'proyecto_id'];
+
+	public function actividad(){
+		return 
+		  $this->belongsTo('App\Models\Cronograma', 'cronograma_id');
+	}
+
+
+}
+
+--------------./Programa_educativo.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Programa_educativo extends Model
+{
+	protected $table='catalogo_pe';
+	public $timestamps =false;
+	protected $fillable = [
+          'programa', 'nivel', 'actreditado_habilitado', 'pnpc'];
+//	public function proyecto(){
+//		return 
+//		  $this->belongsTo('App\Models\Proyecto', 'proyecto_id');
+//	}
+}
+
+--------------./Protocolo.php--------------
+<?php
+/*
+////protocolo
+resumen, introduccion, antecedentes, hipotesis, marco_teorico, 
+metas, objetivo_general, objetivos_especificos, impacto_beneficio, 
+metodologia, vinculacion, referencias, lugar, infraestrucutura
+
+*/
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Protocolo extends Model
+{
+    protected $table='proyecto';
+//    public $timestamps =false;
+
+   protected $fillable = [
+	'resumen', 'introduccion', 'antecedentes', 'hipotesis', 'marco_teorico', 
+	'objetivo_general', 'objetivos_especificos', 'impacto_beneficio', 
+	'metodologia', 'referencias', 'lugar', 'infraestructura','tvinculacion'];
+
+	public function convocatoria(){
+		return 
+		  $this->belongsTo('App\Models\Convocatoria', 'convocatoria_id');
+	}
+
+	public function director(){
+		return 
+		   $this->hasOne('App\Models\User', 'id', 'responsable');
+	}
+
+	public function colaboradores()
+	{
+	    return $this->hasMany('App\Models\Colaboradores');
+	}        
+
+	public function entregables()
+	{
+	    return $this->hasMany('App\Models\Entregables');
+	}        
+
+	public function programa_educativo(){
+		return 
+		   $this->hasOne('App\Models\Programa_educativo', 'id', 'pe');
+	}
+}
+
+--------------./Proyecto.php--------------
+<?php
+/*
+////Información básica del proyecto
+id, titulo, nombre_ies, nombre_pe, area, 
+actreditado_habilitado, pnpc, linea, 
+fecha_inicio, fecha_fin, financiado, duracion, convocatoria_id, responsable, 
+tipo_investigacion, sometido, dictamen, 
+*/
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Proyecto extends Model
+{
+    protected $table='proyecto';
+//    public $timestamps =false;
+
+   protected $fillable = [
+    'titulo', 'financiado', 'nombre_ies', 'pe', 'area', 
+    'linea', 'fecha_inicio', 'fecha_fin', 
+    'convocatoria_id', 'responsable', 'tipo_investigacion'];
+
+	public function convocatoria(){
+		return 
+		  $this->belongsTo('App\Models\Convocatoria', 'convocatoria_id');
+	}
+
+	public function director(){
+		return 
+		   $this->hasOne('App\Models\User', 'id', 'responsable');
+	}
+
+	public function colaboradores()
+	{
+	    return $this->hasMany('App\Models\Colaboradores');
+	}        
+
+
+	public function entregables()
+	{
+	    return $this->hasMany('App\Models\Entregables');
+	}        
+
+	public function gastos()
+	{
+	    return $this->hasMany('App\Models\Gastos');
+	}        
+
+
+	public function actividades()
+	{
+	    return $this->hasMany('App\Models\Cronograma')->orderBy('fecha_inicio', 'asc');
+
+	}        
+
+	public function programa_educativo(){
+		return 
+		   $this->hasOne('App\Models\Programa_educativo', 'id', 'pe');
+	}
+
+	public function Ejercicio(){
+
+		return substr($this->fecha_inicio, 0,4);
+	}
+
+}
+
+--------------./RestriccionesL.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class RestriccionesL extends Model
+{
+    protected $table='catalogo_restricciones_longitud';
+    public $timestamps =false;
+
+   protected $fillable = [ 'descripcion', 'valor' ];
+
+}
+--------------./RestriccionesR.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class RestriccionesR extends Model
+{
+    protected $table='catalogo_restricciones_registro';
+    public $timestamps =false;
+
+   protected $fillable = [ 'descripcion'];
+
+
+/*
+	public function restricciones()
+	{
+	    return $this->hasMany('App\Models\RestriccionesDesgloce');
+	}        
+*/
+
+}
+--------------./Someter.php--------------
+<?php
+/*
+////Información básica del proyecto
+id, titulo, nombre_ies, nombre_pe, area, 
+actreditado_habilitado, pnpc, linea, 
+fecha_inicio, fecha_fin, financiado, duracion, convocatoria_id, responsable, 
+tipo_investigacion, sometido, dictamen, 
+*/
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Someter extends Model
+{
+    protected $table='proyecto';
+//    public $timestamps =false;
+
+   protected $fillable = [
+    'ci01', 'ci02', 'sometido'];
+
+	public function convocatoria(){
+		return 
+		  $this->belongsTo('App\Models\Convocatoria', 'convocatoria_id');
+	}
+
+	public function director(){
+		return 
+		   $this->hasOne('App\Models\User', 'id', 'responsable');
+	}
+
+	public function colaboradores()
+	{
+	    return $this->hasMany('App\Models\Colaboradores');
+	}        
+
+
+	public function entregables()
+	{
+	    return $this->hasMany('App\Models\Entregables');
+	}        
+
+	public function gastos()
+	{
+	    return $this->hasMany('App\Models\Gastos');
+	}        
+
+
+	public function actividades()
+	{
+	    return $this->hasMany('App\Models\Cronograma');
+	}        
+
+	public function programa_educativo(){
+		return 
+		   $this->hasOne('App\Models\Programa_educativo', 'id', 'pe');
+	}
+}
+
+--------------./User.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class User extends Authenticatable
+{
+    use Notifiable;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'email', 'password','cvutecnm','adscripcion'
+    ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password', 'remember_token',
+    ];
+}
+
+--------------./Vinculacion.php--------------
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Vinculacion extends Model
+{
+    protected $table='proyecto';
+    public $timestamps =false;
+
+   protected $fillable = [
+         'vinculacion'];
+
+}
+
+--------------./Auth/ForgotPasswordController.php--------------
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
+
+class ForgotPasswordController extends Controller
+{
+    /*
+    |--------------------------------------------------------------------------
+    | Password Reset Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller is responsible for handling password reset emails and
+    | includes a trait which assists in sending these notifications from
+    | your application to your users. Feel free to explore this trait.
+    |
+    */
+
+    use SendsPasswordResetEmails;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
+}
+
+--------------./Auth/LoginController.php--------------
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+
+class LoginController extends Controller
+{
+    /*
+    |--------------------------------------------------------------------------
+    | Login Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller handles authenticating users for the application and
+    | redirecting them to your home screen. The controller uses a trait
+    | to conveniently provide its functionality to your applications.
+    |
+    */
+
+    use AuthenticatesUsers;
+
+    /**
+     * Where to redirect users after login.
+     *
+     * @var string
+     */
+    protected $redirectTo = '/home';
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('guest')->except('logout');
+    }
+}
+
+--------------./Auth/RegisterController.php--------------
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Models\User;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\DB;
+
+class RegisterController extends Controller
+{
+    /*
+    |--------------------------------------------------------------------------
+    | Register Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller handles the registration of new users as well as their
+    | validation and creation. By default this controller uses a trait to
+    | provide this functionality without requiring any additional code.
+    |
+    */
+
+    use RegistersUsers;
+
+    /**
+     * Where to redirect users after registration.
+     *
+     * @var string
+     */
+    protected $redirectTo = '/home';
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
+
+    /**
+     * Get a validator for an incoming registration request.
+     *
+     * @param  array  $data
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    protected function validator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'cvutecnm' => 'required|string|max:255',
+            'adscripcion' => 'required|string|max:100',
+            'password' => 'required|string|min:6|confirmed',
+        ]);
+    }
+
+    /**
+     * Create a new user instance after a valid registration.
+     *
+     * @param  array  $data
+     * @return \App\User
+     */
+    protected function create(array $data)
+    {
+
+        return User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'cvutecnm' => $data['cvutecnm'],
+            'adscripcion'=> $data['adscripcion'],
+            'password' => Hash::make($data['password']),
+
+        ]);
+    }
+
+    function showRegistrationForm(){
+      $ies = DB::table('catalogo_ies')->get();
+      return view('auth/register', compact('ies')) ;
+   }
+}
+
+--------------./Auth/ResetPasswordController.php--------------
+<?php
+
+namespace App\Http\Controllers\Auth;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Foundation\Auth\ResetsPasswords;
+
+class ResetPasswordController extends Controller
+{
+    /*
+    |--------------------------------------------------------------------------
+    | Password Reset Controller
+    |--------------------------------------------------------------------------
+    |
+    | This controller is responsible for handling password reset requests
+    | and uses a simple trait to include this behavior. You're free to
+    | explore this trait and override any methods you wish to tweak.
+    |
+    */
+
+    use ResetsPasswords;
+
+    /**
+     * Where to redirect users after resetting their password.
+     *
+     * @var string
+     */
+    protected $redirectTo = '/home';
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('guest');
+    }
+}
+
+--------------./Controller.php--------------
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
+class Controller extends BaseController
+{
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+}
+
+--------------./Coordinador/ConvocatoriaController.php--------------
+<?php
+
+namespace App\Http\Controllers\Coordinador;
+
+use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Request;
+use App\Models\Convocatoria;
+
+class ConvocatoriaController extends Controller
+{
+
+    /**
+     * Aquí se inicializa y se dice que solo el Coordinador puede accesar a este controlador
+     */
+      public function __construct()
+      {
+          $this->middleware('role:Coordinador');
+      }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+
+    public function index()
+    {
+        $convocatorias=Convocatoria::orderBy('Fecha_inicio','desc')->get();
+        return view('convocatoria/index',compact('convocatorias'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('convocatoria/create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $convocatoria= new Convocatoria();
+        $convocatoria->Nombre = $request->get('Nombre');
+        $convocatoria->Fecha_inicio  = $request->get('Fecha_inicio');
+        $convocatoria->Fecha_fin  = $request->get('Fecha_fin');
+        $convocatoria->save();
+        return redirect('convocatoria')->with('success', 'Information ha sido agregada');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $convocatoria = Convocatoria::find($id);
+        return view('convocatoria/edit',compact('convocatoria','id'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+
+        $convocatoria= Convocatoria::find($id);
+        $convocatoria->Nombre = $request->get('Nombre');
+        $convocatoria->Fecha_inicio  = $request->get('Fecha_inicio');
+        $convocatoria->Fecha_fin  = $request->get('Fecha_fin');
+        $convocatoria->save();
+        return redirect('convocatoria')->with('success', 'Information ha sido actualizada');;
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        try {
+            $convocatoria= Convocatoria::find($id);
+            $convocatoria->delete();
+            return redirect('convocatoria')->with('success','Informacion ha sido borrada');
+        }catch (\Illuminate\Database\QueryException $e){
+            if($e->getCode()==23000) return redirect('convocatoria')->with('error', 'Convocatoria en uso por al menos un proyecto');;
+        }
+
+
+    }
+
+}
+
+--------------./Coordinador/CrudAdscripcionController.php--------------
+<?php
+
+namespace App\Http\Controllers\Coordinador;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use App\Models\CrudAdscripcion;
+
+class CrudAdscripcionController extends Controller
+{
+      public function __construct()
+      {
+          $this->middleware('role:Coordinador');
+      }
+    /*  *
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+
+    public function index()
+    {
+      $ie=DB::table('catalogo_ies')->get();
+      return view ('crudadscripcion/index', compact('ie'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+      return view('crudadscripcion/create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+      $tipo = new CrudAdscripcion();
+      $tipo->ies = $request->get('ies');
+      $tipo->save();
+      return redirect('crudadscripcion');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+      $ies =  CrudAdscripcion::find($id);
+      return view('crudadscripcion/edit',compact('ies','id'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+      $ies = CrudAdscripcion::find($id);
+      $ies->fill($request->all());
+        $ies->save();
+        return redirect('crudadscripcion');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+      $ies= CrudAdscripcion::find($id);
+      $ies->delete();
+      return redirect('crudadscripcion');
+    }
+}
+
+--------------./Coordinador/CrudAreasController.php--------------
+<?php
+
+namespace App\Http\Controllers\Coordinador;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use App\Models\CrudCatalagoArea;
+
+
+class CrudAreasController extends Controller
+{
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+     public function __construct()
+     {
+         $this->middleware('role:Coordinador');
+     }
+    public function index()
+    {
+      $catalagos=DB::table('catalogo_areas')->get();
+  return view ('crudareas/index', compact('catalagos'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+          return view('crudareas/create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+      $catalago = new CrudCatalagoArea();
+      $catalago->area = $request->get('area');
+      $catalago->save();
+      return redirect('crudareas');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+      $catalagos = CrudCatalagoArea::find($id);
+      return view('crudareas/edit',compact('catalagos','id'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+      $catalago = CrudCatalagoArea::find($id);
+      $catalago->fill($request->all());
+        $catalago->save();
+        return redirect('crudareas');
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+      $catalago= CrudCatalagoArea::find($id);
+    $catalago->delete();
+        return redirect('crudareas');
+    }
+}
+
+--------------./Coordinador/CrudDeLongitudecaracteres.php--------------
+<?php
+
+namespace App\Http\Controllers\Coordinador;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use App\Models\CrudLongitudCaracteres;
+
+//ese nombre  CrudLongitudCaracteres no me convence pero bueno
+
+class CrudDeLongitudecaracteres extends Controller
+{
+      public function __construct()
+      {
+          $this->middleware('role:Coordinador');
+      }
+      /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+
+    public function index()
+    {
+        //para que esta el modelo "RestriccionesL" entonces
+      $longitud = DB::table('catalogo_restricciones_longitud')->get();
+     return view('crudlongitudecaracteres/index', compact('longitud'));
+    }
+
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+      $longitud = CrudLongitudCaracteres::find($id);
+      return view('crudlongitudecaracteres/edit',compact('longitud','id'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+      $longitud =CrudLongitudCaracteres::find($id);
+      $longitud->valor = $request->get('valor');
+      $longitud->save();
+        return redirect('crudlongitudecaracteres');
+    }
+
+}
+
+--------------./Coordinador/CrudEntregablesController.php--------------
+<?php
+
+namespace App\Http\Controllers\Coordinador;
+
+use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Request;
+use App\Models\CrudEntregable;
+use Illuminate\Support\Facades\DB;
+
+
+class CrudEntregablesController extends Controller
+{
+      public function __construct()
+      {
+          $this->middleware('role:Coordinador');
+      }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+      $entregables=DB::table('catalogo_entregables')->get();
+        return view ('crudentregables/index', compact('entregables'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+          return view('crudentregables/create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $entregable = new CrudEntregable();
+        $entregable->descripcion = $request->get('descripcion');
+        $entregable->tipo = $request->get('tipo');
+        $entregable->save();
+        return redirect('crudentregables');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+      $entregable =CrudEntregable::find($id);
+      return view('crudentregables/edit', compact('entregable','id'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+      $entregable =CrudEntregable::find($id);
+      $entregable->fill($request->all());
+      $entregable->save();
+      return redirect('crudentregables');//
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+      $entregable=CrudEntregable::find($id);
+      $entregable->delete();
+      return redirect('crudentregables');
+    }
+}
+
+--------------./Coordinador/CrudGastosController.php--------------
+<?php
+
+namespace App\Http\Controllers\Coordinador;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\CrudGastos;
+class CrudGastosController extends Controller
+{
+        public function __construct()
+        {
+            $this->middleware('role:Coordinador');
+        }
+
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $gastos=DB::table('catalogo_gastos')->get();
+        return view('crudgastos/index', compact('gastos'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('crudgastos/create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+      $gastos = new CrudGastos();
+      $gastos->descripcion = $request->get('descripcion');
+      $gastos->partida = $request->get('partida');
+      $gastos->save();
+      return redirect('crudgastos');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+      $gastos =CrudGastos::find($id);
+      return view('crudgastos/edit', compact('gastos','id'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+      $gastos =CrudGastos::find($id);
+    $gastos->descripcion = $request->get('descripcion');
+    $gastos->partida = $request->get('partida');
+    $gastos->save();
+    return redirect('crudgastos');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+      $gastos=CrudGastos::find($id);
+      $gastos->delete();
+      return redirect('crudgastos');
+    }
+}
+
+--------------./Coordinador/CrudInvestigacionsController.php--------------
+<?php
+
+namespace App\Http\Controllers\Coordinador;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\CrudTipodeinvestigacion;
+use Illuminate\Support\Facades\DB;
+
+class CrudInvestigacionsController extends Controller
+{
+      public function __construct()
+      {
+          $this->middleware('role:Coordinador');
+      }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+      $tipos = DB::table('catalogo_tipo_investigacion')->get();
+     return view('crudinvestigacion/index', compact('tipos'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+      return view('crudinvestigacion/create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $tipo = new CrudTipodeinvestigacion();
+        $tipo->tipo = $request->get('tipo');
+        $tipo->save();
+        return redirect('crudinvestigacion');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+      $tipo = CrudTipodeinvestigacion::find($id);
+        return view('crudinvestigacion/edit', compact('tipo','id'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+       $tipo = CrudTipodeinvestigacion::find($id);
+       $tipo->tipo=$request->get('tipo');
+       $tipo->save();
+       return redirect('crudinvestigacion');
+
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+      $linea=CrudTipodeinvestigacion::find($id);
+      $linea->delete();
+      return redirect('crudinvestigacion');
+    }
+}
+
+--------------./Coordinador/CrudLineasController.php--------------
+<?php
+
+namespace App\Http\Controllers\Coordinador;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\CrudLineas;
+
+class CrudLineasController extends Controller
+{
+
+      public function __construct()
+      {
+          $this->middleware('role:Coordinador');
+      }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+      $lineas = DB::table('catalogo_lineas')->get();
+     return view('crudlineas/index', compact('lineas'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('crudlineas/create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+          $lineas = new CrudLineas();
+          $lineas->linea = $request->get('linea');
+          $lineas->save();
+          return redirect('crudlineas');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+      $linea = CrudLineas::find($id);
+      return view('crudlineas/edit', compact('linea','id'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $lineas = CrudLineas::find($id);
+        $lineas->linea = $request->get('linea');
+        $lineas->save();
+        return redirect('crudlineas');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+      $lineas= CrudLineas::find($id);
+      $lineas->delete();
+      return redirect('crudlineas');
+    }
+}
+
+--------------./Coordinador/CrudProgramaEducativo.php--------------
+<?php
+
+namespace App\Http\Controllers\Coordinador;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Models\Programa_educativo;
+
+
+class CrudProgramaEducativo extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+     public function __construct()
+     {
+         $this->middleware('role:Coordinador');
+     }
+    public function index()
+    {
+          $programaeducativo=DB::table('catalogo_pe')->get();
+      return view ('crudpe/index', compact('programaeducativo'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+      return view('crudpe/create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $tipo = Compras::create($request->all());        
+        $tipo->save();
+        return redirect('crudpe');    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+       $programaeducativo = Programa_educativo::find($id);
+       return view('crudpe/edit', compact('programaeducativo','id'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+      $programaeducativo= Programa_educativo::find($id);
+      $programaeducativo->fill($request->all());
+        $programaeducativo->save();
+        return redirect('crudpe');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+}
+
+--------------./Coordinador/CrudUsersController.php--------------
+<?php
+
+namespace App\Http\Controllers\Coordinador;
+use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Request;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
+
+
+
+class CrudUsersController extends Controller
+{
+      public function __construct()
+      {
+          $this->middleware('role:Coordinador');
+      }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+      $users = DB::table('users')->get();
+     return view('crudusers/index', compact('users'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $ies = DB::table('catalogo_ies')->get();
+        return view('crudusers/create', compact('ies'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+                $user = new User();
+                $user->name = $request->input('name');
+                $user->cvutecnm = $request->input('cvutecnm');
+                $user->adscripcion = $request->input('adscripcion');
+                $user->email = $request->input('email');
+                $user->password = $request->input('password');
+                $user->save();
+                return redirect('crudusers');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+      $user = User::find($id);
+    return view('crudusers/edit', compact('user', 'id'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+
+
+      $users = User::find($id);
+        $users->fill($request->all());
+        $users->save();
+        return redirect('crudusers');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+      $users= User::find($id);
+      $users->delete();
+      return redirect('crudusers');
+    }
+}
+
+--------------./Coordinador/IntegracionController.php--------------
+<?php
+
+namespace App\Http\Controllers\Coordinador;
+
+use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Request;
+use App\Models\Convocatoria;
+
+class IntegracionController extends Controller
+{
+        public function __construct()
+        {
+            $this->middleware('role:Coordinador');
+        }
+
+    public function registrados(){
+//        $convocatorias=Convocatoria::all()->sortByDesc("Fecha_inicio");
+        $convocatorias=Convocatoria::orderByDesc("Fecha_inicio")->paginate(1);
+        return view('integracion/listado',compact('convocatorias'));
+    }
+}
+
+--------------./Coordinador/RestriccionesRegistroController.php--------------
+<?php
+
+namespace App\Http\Controllers\Coordinador;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use App\Models\RestriccionesR;
+
+
+
+class RestriccionesRegistroController extends Controller
+{
+      public function __construct()
+      {
+          $this->middleware('role:Coordinador');
+      }
+      /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+
+    public function index()
+    {
+      $restricciones = RestriccionesR::all();
+     return view('restriccionesr/index', compact('restricciones'));
+    }
+
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+      $restriccion = RestriccionesR::find($id);
+      return view('restriccionesr/edit',compact('restriccion','id'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+      $restriccion =RestriccionesR::find($id);
+      $restriccion->valor = $request->get('valor');
+      $restriccion->save();
+        return redirect('home');
+    }
+
+}
+
+--------------./DocumentosController.php--------------
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
+use App\Models\Proyecto;
+use App\Models\Protocolo;
+use App\Models\Entregables;
+use App\Models\Vinculacion;
+use App\Models\Aval;
+
+
+use PDF;
+
+class DocumentosController extends Controller
+{
+    public function ci01($idproy)
+    {
+      $proyecto= Proyecto::find($idproy);
+      //return view('documentos.ci01',compact('proyecto'));  
+
+      $pdf = PDF::loadView('documentos.ci01',compact('proyecto'));
+      return  $pdf->download($idproy . '_ci-01.pdf');
+//      return View('documentos.ci01',compact('proyecto'));
+    }
+    public function ci02($idproy)
+    {      
+      $proyecto= Proyecto::find($idproy);
+      $pdf = PDF::loadView('documentos.ci02',compact('proyecto'));
+      return  $pdf->download($idproy . '_ci-02.pdf');
+    }
+
+    public function dci01($idproy){
+      $proyecto= Proyecto::find($idproy);
+      if(  $proyecto->ci01 == "") return;
+      $path = public_path() . '/evidencias/' . $proyecto->ci01;
+      //return Storage::download($path);
+      return response()->download($path);
+    }
+
+    public function dci02($idproy){
+      $proyecto= Proyecto::find($idproy);
+      if(  $proyecto->ci02 == "") return;
+      $path = public_path() . '/evidencias/' . $proyecto->ci02;
+      //return Storage::download($path);
+      return response()->download($path);
+    }
+
+
+    public function vinculacion($idproy){
+        $vinculacion= Vinculacion::find($idproy);
+        if(  $vinculacion->vinculacion == "") return;
+        $path = public_path() . '/evidencias/' . $vinculacion->vinculacion;
+        //return Storage::download($path);
+        return response()->download($path);
+    }
+    public function aval($idproy){
+        $aval= Aval::find($idproy);
+        if(  $aval->aval == "") return;
+        $path = public_path() . '/evidencias/' . $aval->aval;
+        //return Storage::download($path);
+        return response()->download($path);
+    }
+
+
+
+}
+
+--------------./HomeController.php--------------
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\User;
+use App\Models\Proyecto;
+
+use App\Models\Convocatoria;
+
+use App\Models\CrudCatalagoArea;
+use App\Models\CrudGastos;
+use App\Models\CrudLineas;
+use App\Models\CrudEntregable;
+use App\Models\CrudTipodeinvestigacion;
+use App\Models\CrudLongitudCaracteres;
+
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Session;
+
+class HomeController extends Controller
+{
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+
+
+        if ($request->input('page')) $hayg=true;
+        else $hayg = false;
+        if (\Session::has('page')) $hays=true;
+        else $hays = false;
+
+        if( $hayg == false && $hays == false ){
+            $page=true;
+        }
+        if( $hayg == false && $hays == true  ){
+            $page = \Session::get('page');
+        }
+        if( $hayg == true  && $hays == false ){
+            $page=$request->input('page');
+            \Session::put('page' ,  $request->input('page') );
+        }
+        if( $hayg == true  && $hays == true  ){
+            $page=$request->input('page');
+            \Session::put('page' ,  $request->input('page') );
+        }
+        $request->merge( array( 'page' => $page ) );
+
+        $logeado = Auth::user();
+
+
+        switch ($logeado->rol) {
+            case 'Investigador':
+                $convocatorias=Convocatoria::orderByDesc("Fecha_inicio")->paginate(2);
+
+                $convocatorias->currentPage($page);
+                return view('sistema.Investigador',compact('convocatorias'));
+                break;
+            case 'Coordinador':
+            $count = User::all()->count();
+            $countareas= CrudCatalagoArea::all()->count();
+            $entregable= CrudEntregable::all()->count();
+            $proyecto = Proyecto::all()->count();
+            $convocatorias =Convocatoria::all()->count();
+            $catalogo = CrudCatalagoArea::all()->count();
+            $gastos = CrudGastos::all()->count();
+            $lineas = CrudLineas::all()->count();
+            $tipo = CrudTipodeinvestigacion::all()->count();
+            // $ci    = User::where('rol','Investigador')->count();
+            //   $cii    = User::where('rol','Coordinador')->count();
+//                $countproyect = Proyecto::all()->count();
+//
+//
+            return view('sistema.Coordinador',compact('count','countareas','entregable','proyecto','convocatorias',
+            'catalogo','entregable','gastos','lineas','tipo', 'longitud'));
+
+                break;
+//            default:
+//                return view('sistema.home');
+//                break;
+        }
+    }
+}
+
+--------------./Investigador/AvalController.php--------------
+<?php
+
+namespace App\Http\Controllers\Investigador;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Proyecto;
+use App\Models\Aval;
+
+class AvalController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('role:Investigador');
+    }
+
+    public function mostrar($idproy)
+    {
+        $aval= Aval::find($idproy);
+        $proyecto= Proyecto::find($idproy);
+        return view('aval/show',compact('proyecto','aval'));
+    }
+    public function agregar(Request $request)
+    {
+        $idproy = $request->input('proyecto_id');
+        $file = $request->file('evidencia');
+        $extension = "";
+        $extension = $file->getClientOriginalExtension();
+        $fileName = $idproy . '_aval' . '.' . $extension;
+        $path = Storage::putFileAs(
+            '', $request->file('evidencia'), $fileName
+        );
+        $Aval= Aval::find($idproy);
+        $Aval->aval = $path;
+        $Aval->save();
+        $path = public_path() . '/evidencias' . $path;
+        $Retornar = array(
+            'fileName' => $fileName,
+            'proyecto_id' => $idproy,
+
+        );
+        return response()->json($Retornar);
+    }
+
+
+    public function eliminar(Request $request)
+    {
+        $Aval = Aval::find( $request->input('proyecto_id') );
+        $fileName = $Aval->aval;
+        $archivo = public_path() .'/evidencias/'.$fileName;
+        $ret = "--";
+
+        if (Storage::disk('local')->exists($fileName) ) {
+            //return response()->download($url);
+            $ret = Storage::disk('local')->delete($fileName) ;
+            if($ret) $Aval->aval = null;
+            $Aval->save();
+            $realizado = "si";
+
+        }else $realizado = "no";
+
+        $arrayName = array('id' =>  $request->input('proyecto_id'),'realizado' => $ret , 'archivo'=> $archivo);
+        return response()->json( $arrayName );
+    }
+
+
+
+
+    public function update(Request $request, $idproy)
+    {
+//        return redirect('home')->with('success', 'Information del protocolo ha sido actualizada');
+        //return redirect()->back()->with('success', 'Information del protocolo ha sido actualizada');
+    }
+
+}
+
+--------------./Investigador/ColaboradoresController.php--------------
+<?php
+
+namespace App\Http\Controllers\Investigador;
+
+use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
+
+use App\Models\Proyecto;
+use App\Models\Colaboradores;
+//∫use App\Models\User;
+
+class ColaboradoresController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('role:Investigador');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index($idproy)
+    {
+
+        $logeado = Auth::user();
+
+        $proyecto= Proyecto::find($idproy);
+
+/*
+
+        $investigadores = DB::table('users')
+                    ->where('rol', 'Investigador')
+                    ->where('id', '<>', $logeado->id)
+                    //not in
+                    ->get();
+
+*/
+
+
+        $investigadores = DB::table('users')
+                    ->where('rol', 'Investigador')
+                    ->where('id', '<>', $logeado->id)
+                    ->whereRaw('id not in (select users_id from colaboradores where proyecto_id = ?)', [$idproy])
+                    ->get();
+
+       $colaboradores = DB::table('colaboradores')
+            ->where('proyecto_id',$idproy)
+            ->join('users', 'users.id', '=', 'colaboradores.users_id')
+            ->select('users.id', 'users.cvutecnm', 'users.name', 'colaboradores.participacion')
+            ->get();
+
+        return view('colaboradores/index',compact('colaboradores','proyecto','investigadores'));
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function invitar(Request $request)
+    {
+
+        $Colaboradores  = new Colaboradores();
+        $Colaboradores->users_id=$request->input('users_id');
+        $Colaboradores->proyecto_id=$request->input('proyecto_id');
+        $Colaboradores->save();
+
+        $Retornar = DB::table('colaboradores')
+            ->where('proyecto_id',$request->input('proyecto_id'))
+            ->join('users', 'users.id', '=', 'colaboradores.users_id')
+            ->select('users.id', 'users.cvutecnm', 'users.name', 'colaboradores.participacion')
+            ->where('users.id',$request->input('users_id') )           
+            ->get();
+
+        return response()->json($Retornar);
+    }
+
+
+    public function desinvitar(Request $request)
+    {
+        $Colaboradores = Colaboradores::where('proyecto_id' , $request->input('proyecto_id') ) 
+                    ->where ('users_id' , $request->input('users_id') )
+                    ->delete();
+        $arrayName = array('id' =>  $request->input('users_id') );
+        return response()->json( $arrayName );                         
+    }
+
+    public function rechazar(Request $request)
+    {
+        $Colaboradores= Colaboradores::find($request->input('colaboracion'));
+        if ($Colaboradores==null)
+                $Retornar=array('colaboracion'=> $request->input('colaboracion'), 'rechazado' => false);
+        else{
+            $Colaboradores->delete();
+            $Retornar=array('colaboracion'=> $request->input('colaboracion'), 'rechazado' => true);
+        }
+        return response()->json($Retornar);
+    }
+
+    public function aceptar(Request $request){
+        $Colaboradores= Colaboradores::find($request->input('colaboracion'));
+        if ($Colaboradores==null)
+                $Retornar=array('colaboracion'=> $request->input('colaboracion'), 'aceptado' => false);
+        else{
+            $Colaboradores->participacion=1;
+            $Colaboradores->save();
+            $Retornar=array('colaboracion'=> $request->input('colaboracion'), 'aceptado' => true);
+        }
+        return response()->json($Retornar);        
+    }
+
+}
+
+--------------./Investigador/CronogramaController.php--------------
+<?php
+
+namespace App\Http\Controllers\Investigador;
+
+use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
+
+use App\Models\Proyecto;
+use App\Models\Cronograma;
+
+
+
+
+class CronogramaController extends Controller
+{
+    public function __construct()
+    {
+        
+        $this->middleware('role:Investigador');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index($idproy)
+    {
+        $proyecto= Proyecto::find($idproy);
+        $opciones   = DB::table('entregables')
+            ->where('proyecto_id',$idproy)
+            ->get();
+
+        $actividades =Cronograma::orderBy('fecha_inicio','DESC')
+//                        ->orderBy('fecha_fin','DESC')
+                        ->where('proyecto_id',$idproy)
+                        ->get();
+//       $actividades = Cronograma::all()
+//                   ->where('proyecto_id',$idproy);
+//                   ->orderBy('fecha_inicio','asc');
+
+        return view('cronograma/index',compact('actividades','proyecto','opciones'));
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function agregar(Request $request)
+    {
+
+//    <!--   id, actividad, fecha_inicio, fecha_fin, monto, proyecto_id, entregables_id  -->
+
+        $Cronograma  = new Cronograma();
+        $Cronograma->fill($request->all());
+        $Cronograma->save();
+
+
+        $arr=$Cronograma->toArray();
+        $arr['entregable'] = $Cronograma->entregable->descripcion;
+        return json_encode($arr);
+
+    }
+
+
+    public function eliminar(Request $request)
+    {
+        $Cronograma = Cronograma::find( $request->input('actividad_id') );
+        $Cronograma->delete();
+        $arrayName = array('id' =>  $request->input('actividad_id') );
+        return response()->json( $arrayName );
+    }
+
+}
+
+--------------./Investigador/EntregablesController.php--------------
+<?php
+
+namespace App\Http\Controllers\Investigador;
+
+use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
+
+use App\Models\Proyecto;
+use App\Models\Entregables;
+
+
+class EntregablesController extends Controller
+{
+    public function __construct()
+    {
+      
+        $this->middleware('role:Investigador');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index($idproy)
+    {
+        $proyecto= Proyecto::find($idproy);
+
+        $opciones = DB::table('catalogo_entregables')
+//                        ->select('id','descripcion')
+                        ->get();
+
+        $entregables  = DB::table('entregables')
+            ->where('proyecto_id',$idproy)
+            ->get();
+        $tipos = DB::table('catalogo_entregables')
+            ->distinct('tipo')
+            ->select('tipo')
+            ->get();
+
+        return view('entregables/index',compact('entregables','proyecto','opciones','tipos'));
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function agregar(Request $request)
+    {
+        if ($request->input('cuantos') == 0 ){
+            $Retornar  = array('error' => "Debe especificar una cantidad" );
+            return response()->json($Retornar);
+
+        }
+        $Entregables  = new Entregables();
+        $Entregables->tipo=$request->input('tipo');
+        $Entregables->cuantos=$request->input('cuantos');
+        $Entregables->descripcion=$request->input('descripcion');
+        $Entregables->proyecto_id=$request->input('proyecto_id');
+        $Entregables->save();
+        $Retornar= $Entregables;
+        // $Retornar = DB::table('entregables')
+        //     ->where('proyecto_id',$request->input('proyecto_id'))
+        //     ->
+        //     ->get();
+
+        return response()->json($Retornar);
+    }
+
+
+    public function eliminar(Request $request)
+    {
+        $Entregables = Entregables::find( $request->input('entregable_id') );
+        $Entregables->delete();
+        $arrayName = array('id' =>  $request->input('entregable_id') );
+        return response()->json( $arrayName );
+    }
+
+}
+
+--------------./Investigador/GastosController.php--------------
+<?php
+
+namespace App\Http\Controllers\Investigador;
+
+use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
+
+use App\Models\Proyecto;
+use App\Models\Cronograma;
+
+use App\Models\Gastos;
+
+
+
+class GastosController extends Controller
+{
+    public function __construct()
+    {
+        
+        $this->middleware('role:Investigador');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index($idproy)
+    {
+        $proyecto= Proyecto::find($idproy);
+
+
+        $opciones   = DB::table('entregables')
+            ->where('proyecto_id',$idproy)
+            ->get();
+
+        $actividades =Cronograma::orderBy('fecha_inicio','ASC')
+                        ->orderBy('fecha_fin','ASC')
+                        ->where('proyecto_id',$idproy)
+                        ->get();
+//                        var_dump($actividades);
+
+        $opciones = DB::table('catalogo_gastos')
+//                  ->select('partida','descripcion')
+                    ->get();
+        return view('gastos/index',compact('actividades','proyecto','opciones'));
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function agregar(Request $request)
+    {
+
+//id, descripcion, partida, monto, cronograma_id, proyecto_id
+
+        $Gastos  = new Gastos();
+        $Gastos->descripcion=$request->input('descripcion');
+        $Gastos->partida=$request->input('partida');
+        $Gastos->monto=$request->input('monto');
+        $Gastos->cronograma_id=$request->input('cronograma_id');
+        $Gastos->proyecto_id=$request->input('proyecto_id');
+        $Gastos->save();
+
+        $totales = DB::table('gastos')
+                ->select( DB::raw('SUM(monto) as monto'))
+                ->where('proyecto_id',$request->input('proyecto_id'))
+                ->get();
+
+
+        $arr=$Gastos->toArray();
+        $arr['total'] = $totales;
+
+        return json_encode($arr);
+
+    }
+
+
+    public function eliminar(Request $request)
+    {
+        $Gastos = Gastos::find( $request->input('gasto_id') );
+        $Gastos->delete();
+
+        $totales = DB::table('gastos')
+        ->select( DB::raw('SUM(monto) as monto'))
+        ->where('proyecto_id', $Gastos->proyecto_id )
+        ->get();
+
+        $arr=$Gastos->toArray();
+        $arr['total'] = $totales;
+
+
+        return response()->json( $arr );
+    }
+
+}
+
+--------------./Investigador/ProtocoloController.php--------------
+<?php
+
+namespace App\Http\Controllers\Investigador;
+
+use App\Http\Controllers\Controller;
+
+
+use Illuminate\Http\Request;
+
+//use Illuminate\Support\Facades\DB;
+//use Illuminate\Support\Facades\Auth;
+
+
+use App\Models\Proyecto;
+use App\Models\Protocolo;
+use App\Models\RestriccionesL;
+//use App\Models\User;
+
+class ProtocoloController extends Controller
+{
+    public function __construct()
+    {
+      
+        $this->middleware('role:Investigador');
+    }
+
+    public function mostar($idproy)
+    {
+        $partes=RestriccionesL::all();
+        //var_dump($partes);
+        //exit;
+        $protocolo= Protocolo::find($idproy);
+        $proyecto= Proyecto::find($idproy);
+        return view('protocolo/show',compact('proyecto','protocolo','partes'));
+    }
+
+    public function update(Request $request, $idproy)
+    {
+        $partes=RestriccionesL::all();
+        $protocolo= Protocolo::find($idproy);
+        $protocolo->fill($request->all());
+        $protocolo->save();
+        $proyecto= Proyecto::find($idproy);
+        return view('protocolo/show',compact('proyecto','protocolo','partes'));
+//        return redirect('home')->with('success', 'Information del protocolo ha sido actualizada');
+        //return redirect()->back()->with('success', 'Information del protocolo ha sido actualizada');
+    }
+
+}
+
+--------------./Investigador/ProyectoController.php--------------
+<?php
+
+namespace App\Http\Controllers\Investigador;
+
+use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Request;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
+
+use App\Models\Proyecto;
+use App\Models\Colaboradores;
+use App\Models\Convocatoria;
+use App\Models\RestriccionesR;
+use App\Models\User;
+
+class ProyectoController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('auth');
+//        $this->middleware('role:Invesgitador', ['only' => ['fooAction', 'barAction']]);
+//        $this->middleware('role:Coordinador', ['only' => ['fooAction', 'barAction']]);        
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index()
+    {
+        $proyectos=Proyecto::all();
+        return view('proyecto/index',compact('proyectos'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $ies = DB::table('catalogo_ies')->get();
+        $pes = DB::table('catalogo_pe')->get();
+        $areas = DB::table('catalogo_areas')->get();
+        $lineas = DB::table('catalogo_lineas')->get();
+        $hoy = date("Y-m-d");
+        $convocatorias = DB::table('convocatoria')
+                    ->whereraw("'$hoy' BETWEEN Fecha_inicio AND Fecha_fin")
+                    ->get();
+        $tipos = DB::table('catalogo_tipo_investigacion')->get();
+        return view('proyecto/create',compact('convocatorias','ies','pes','areas','lineas','tipos'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+
+        $errores="";
+        $logeado = Auth::user();
+/*
+        $proyecto= new Proyecto();
+        $proyecto->titulo_proyecto=$request->get('titulo');
+        $proyecto->fecha_elaboracion = date("Y-m-d");
+        $proyecto->responsable=$logeado->id;
+        $proyecto->convocatoria_id = $request->get('id_conv');
+        $proyecto->save();        
+
+*/
+        $puede = true;
+        $parametros=$request->all();
+        $parametros['responsable']=$logeado->id;
+        $fechaHoy = new \DateTime(); // Today
+        $hoy = $fechaHoy->format('d/m/Y h:s'); // echos today!
+        ob_start();
+        print_r($request->all());
+        $result = ob_get_clean();
+//        $errores .=  $result;
+
+        //////RESTRICCIONES
+// 1 Proyectos financiados por línea de investigación
+        $cuantos = Proyecto::where( 'convocatoria_id' , $request->get('convocatoria_id') )
+                        ->where('financiado', 1)
+                        ->count();
+
+        $Restricciones = RestriccionesR::find(1);                
+        if($cuantos >=  $Restricciones->valor  &&  $request->get('financiado') == 1 ) {
+            $errores .= ' Ya hay un proyecto financiado en esta convocatoria con esta misma linea.';
+            $puede = false;
+        }
+
+//2 Proyectos por línea de investigación = 2
+        $cuantos = Proyecto::where( 'convocatoria_id' , $request->get('convocatoria_id') )
+                        ->count();
+
+
+        $Restricciones = RestriccionesR::find(2);    
+        if($cuantos >= $Restricciones->valor) {
+            $errores .= ' Ya se registró en esta convocatoria con esta misma linea el numero màximo de proyectos.';
+            $puede = false;
+        }
+
+
+//3 Participaciones como director = 1
+        $tiene= Proyecto::where( 'convocatoria_id' , $request->get('convocatoria_id') )
+                        ->where('responsable',  $logeado->id )
+                        ->count();
+
+        $Restricciones = RestriccionesR::find(3);    
+        if($tiene >= $Restricciones->valor) {
+            $errores .= ' Este investigador ya figura como director de otro proyecto.';
+            $puede = false;
+        }
+        
+        //*4 Máximo de participaciones = 2
+        $colabora = DB::table('colaboradores')
+                      ->select('users_id')
+                      ->join('proyecto', 'proyecto.id', '=', 'colaboradores.proyecto_id')
+                      ->where('proyecto.convocatoria_id',$request->input('convocatoria_id'))
+                      ->where('users_id',$logeado->id )
+                      ->count();
+
+        
+        $Restricciones = RestriccionesR::find(4);
+        $parti=   $Restricciones->valor;
+        if( ($colabora + $tiene) >= $parti ) {
+            $errores .= " Eexcede el numero de particiapcinoes, tiene: $tiene y colabora: $colabora. ($hoy)" . $request->input('convocatoria_id');
+            $puede = false;
+        }
+
+        if($puede) {
+            Proyecto::create($parametros);
+            $Retornar = array('status' => 'alert alert-success', 'mensaje' => 'El proyecto ha sido registrado.');
+        }else{
+            $Retornar = array('status' => 'alert alert-danger', 'mensaje' => $errores );
+
+        }
+
+        return response()->json($Retornar);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function sespecial(Request $request)
+    {
+
+        // $logeado = Auth::user();
+        // $proyecto= new Proyecto();
+        // $proyecto->titulo_proyecto=$request->get('titulo');
+        // $proyecto->fecha_elaboracion = date("Y-m-d");
+        // $proyecto->responsable=$request->get('director');
+        // $proyecto->convocatoria_id = $request->get('id_conv');
+        // $proyecto->save();
+        $proyecto = Proyecto::create($request->all());
+        return response()->json($proyecto);
+//        return redirect('home')->with('success', 'Information ha sido agregada');
+    }
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    public function especial()
+    {
+        $ies = DB::table('catalogo_ies')->get();
+        $pes = DB::table('catalogo_pe')->get();
+        $areas = DB::table('catalogo_areas')->get();
+        $lineas = DB::table('catalogo_lineas')->get();
+        $tipos = DB::table('catalogo_tipo_investigacion')->get();
+        $hoy = date("Y-m-d");
+        $convocatorias = DB::table('convocatoria')
+                    ->whereraw("'$hoy' BETWEEN Fecha_inicio AND Fecha_fin")
+                    ->get();
+        $investigadores = DB::table('users')
+                    ->where('rol', 'Investigador')
+                    ->get();
+        return view('proyecto/createespecial',compact('convocatorias','investigadores','ies','pes','areas','lineas','tipos'));
+    }
+
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        try {
+            $proyecto= Proyecto::find($id);  
+            if ($proyecto != null){
+                $proyecto->delete();
+                return redirect('home')->with('success','Informacion ha sido borrada');
+            }else{
+                return redirect('home')->with('error','Proyecto no encontrado');
+            }
+
+        }catch (\Illuminate\Database\QueryException $e){
+            if($e->getCode()==23000) return redirect('home')->with('error', 'El proyecto tiene al menos un colaborador');;
+        }
+    }
+}
+
+--------------./Investigador/SometerController.php--------------
+<?php
+
+namespace App\Http\Controllers\Investigador;
+
+use App\Http\Controllers\Controller;
+
+use Illuminate\Http\Request;
+
+
+use Illuminate\Http\UploadedFile;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
+
+use Illuminate\Support\Facades\DB;
+//use Illuminate\Support\Facades\Auth;
+
+
+use App\Models\Proyecto;
+use App\Models\Someter;
+use App\Models\Convocatoria;
+use App\Models\Colaboradores;
+use App\Models\Entregables;
+use App\Models\Cronograma;
+
+use App\Models\User;
+
+use App\Models\Vinculacion;
+
+use App\Models\RestriccionesR;
+
+//use App\Models\User;
+
+class SometerController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('role:Investigador');
+    }
+
+
+    public function someter($idproy)
+    {
+/*
+        $validacion = array(
+            'convocatoria' => array('rubro' => "rubro" ,'resultado' => "resultado", 'mensaje' => "mensaje", ) ,
+            'rubro' => array('rubro' => "rubro" ,'resultado' => "resultado", 'mensaje' => "mensaje", ) ,
+
+            );
+*/
+        $puede = true;
+
+        $proyecto= Proyecto::find($idproy);
+
+//0.Convocatoria en tiempo
+        $convocatoria = $proyecto->Convocatoria;
+        $ConvocatoriaFechaInicio = new \DateTime($convocatoria->Fecha_inicio);
+        $ConvocatoriaFechaFin  = new \DateTime($convocatoria->Fecha_fin);
+        $fechaSometido = new \DateTime(); // Today
+        $fechaSometido->format('d/m/Y'); // echos today!
+
+        $validacion["convocatoria"]["categoria"] = "Convocatoria";
+        if(
+          $fechaSometido->getTimestamp() >= $ConvocatoriaFechaInicio->getTimestamp() &&
+          $fechaSometido->getTimestamp() <= $ConvocatoriaFechaFin->getTimestamp() ) {
+            $validacion["convocatoria"]["resultado"] = "alert-success";
+            $validacion["convocatoria"]["mensaje"] = "En tiempo (sometido antes de $convocatoria->Fecha_fin)";
+        }else{
+            $validacion["convocatoria"]["resultado"] = "alert-danger";
+            $validacion["convocatoria"]["mensaje"] = "Sometido fuera del tiempo de la convocatoria";
+            $puede = false;
+        }
+
+//1. Protocolo
+/*
+////protocolo
+resumen, introduccion, antecedentes, hipotesis, marco_teorico,
+metas, objetivo_general, objetivos_especificos, impacto_beneficio,
+metodologia, referencias, lugar, infraestrucutura
+*/
+//2. Colaboradores
+    $Colaboradores = $proyecto->Colaboradores;
+    $validacion["Colaboradores"]["categoria"] = "Colaboradores:";
+    $todos=true;
+    $acep="<ul>";
+    $cuantos=0;
+    foreach($Colaboradores as $colaborador){
+        $quien = $colaborador->quien;
+        $cuantos++;
+        if ( $colaborador->participacion == null){
+            $acep .= "<li>$quien->name aún no acepta</li>";
+            $todos=false;
+        }else{
+            $acep .= "<li>$quien->name ya acepto</li>";
+        }
+    }
+    $acep .= "</ul>";
+
+    if($todos) {
+            //////RESTRICCION DE MAXIMO Y MINIMO DE COLABORADORES
+            $Maximo = RestriccionesR::find(7);
+            $Minimo = RestriccionesR::find(8);
+
+            if($cuantos <  $Minimo->valor ) {
+                $validacion["Colaboradores"]["resultado"] = "alert-danger";
+                $validacion["Colaboradores"]["mensaje"] = "Este proyecto no cuenta con los colaboradores suficientes";
+                $puede = false;
+            }elseif($cuantos >  $Maximo->valor ) {
+                $validacion["Colaboradores"]["resultado"] = "alert-danger";
+                $validacion["Colaboradores"]["mensaje"] = "Este proyecto exede en numero de colaboradores";
+                $puede = false;
+            }else{
+                $validacion["Colaboradores"]["resultado"] = "alert-success";
+                $validacion["Colaboradores"]["mensaje"] = $acep;
+            }
+    }else{
+        $validacion["Colaboradores"]["resultado"] = "alert-danger";
+        $validacion["Colaboradores"]["mensaje"] = $acep;
+        $puede = false;
+    }
+
+
+
+
+//3. Entregables
+    $Entregables = $proyecto->entregables;
+    $validacion["Entregables"]["categoria"] = "Entregables:";
+    $validacion["Entregables"]["resultado"] = "alert-waning ";
+    $validacion["Entregables"]["mensaje"] = "nada";
+    $cuantos=0;
+    $acep="<table border='1'><thead><th>TIPO</th><th>CUANTOS</th><th>DESCRIPCION</th></thead><tbody>";
+    foreach($Entregables as $entregable){
+        $acep .= "<tr><td>$entregable->tipo</td><td>$entregable->cuantos</td><td>$entregable->descripcion</td><tr>";
+        $cuantos++;
+    }
+    $acep .= "</tbody></table>";
+    if($cuantos!=0) {
+        $validacion["Entregables"]["resultado"] = "alert-success";
+        $validacion["Entregables"]["mensaje"] = $acep;
+    }else{
+        $validacion["Entregables"]["resultado"] = "alert-danger";
+        $validacion["Entregables"]["mensaje"] = "Este proyecto no tiene entregables";
+        $puede = false;
+    }
+//4. Cronograma
+
+    $Actividades = $proyecto->actividades;
+    $validacion["Actividades"]["categoria"] = "Actividades:";
+    $cuantos=0;
+    $acep="<table border='1'><thead><th>ACTIVIDAD</th><th>FECHAS</th><th>DESCRIPCION</th></thead><tbody>";
+    foreach($Actividades as $actividad){
+        $entregable = $actividad->entregable;
+        $acep .= "<tr><td>$actividad->actividad</td><td>$actividad->fecha_inicio a $actividad->fecha_fin</td><td>$entregable->descripcion</td><tr>";
+        $cuantos++;
+    }
+    $acep .= "</tbody></table>";
+
+
+
+
+    $entregables_sin_activiad = 0;
+    $entregables_sin_activiad = DB::table('entregables')
+                ->where('proyecto_id', '=' , $idproy )
+                ->whereRaw('id not in (SELECT DISTINCT IFNULL(entregables_id,0) FROM cronograma where proyecto_id = ?)', [$idproy])
+                ->count();
+
+    if($cuantos!=0) {
+        $validacion["Actividades"]["resultado"] = "alert-success";
+        $validacion["Actividades"]["mensaje"] = $acep;
+        if($entregables_sin_activiad>0) {
+            $validacion["Actividades"]["resultado"] = "alert-danger";
+            $validacion["Actividades"]["mensaje"] = "Este proyecto tiene $entregables_sin_activiad entregables sin que se les asigne actividades";
+            $puede = false;
+            
+        }else{
+            $validacion["Actividades"]["resultado"] = "alert-success";
+            $validacion["Actividades"]["mensaje"] = $acep . " " . $entregables_sin_activiad ;
+
+        }
+
+
+    }else{
+        $validacion["Actividades"]["resultado"] = "alert-danger";
+        $validacion["Actividades"]["mensaje"] = "Este proyecto no tiene actividades";
+        $puede = false;
+    }
+
+
+//5. Presupuesto (financiado)
+    $Gastos = $proyecto->gastos;
+    $validacion["Financiamiento"]["categoria"] = "Financiamiento:";
+    $cuantos=0;
+    $total=0;
+    $acep="<table border='1'><thead><th>DESCRIPCION</th><th>MONTO</th></thead><tbody>";
+    foreach($Gastos as $gasto){
+        $acep .= "<tr><td>$gasto->descripcion</td><td>$gasto->monto</td><tr>";
+        $cuantos++;
+        $total+=$gasto->monto;
+    }
+    $acep .= "</tbody></table>";
+    if( $proyecto->financiado == 0 ){
+        $validacion["Financiamiento"]["categoria"] = "Financiamiento:";
+        $validacion["Financiamiento"]["resultado"] = "alert-warning";
+        $validacion["Financiamiento"]["mensaje"] = "Este proyecto no es financiado por lo que no importa si tiene o no gastos";
+
+    }else{
+
+        if($cuantos!=0) {
+            //////RESTRICCION DE MONTO MAXIMO
+            $Restricciones = RestriccionesR::find(6);
+            if($total >  $Restricciones->valor ) {
+                $validacion["Financiamiento"]["resultado"] = "alert-danger";
+                $validacion["Financiamiento"]["mensaje"] = "Este proyecto exede del monto a financiar";
+                $puede = false;
+            }else{
+                $validacion["Financiamiento"]["resultado"] = "alert-success";
+                $validacion["Financiamiento"]["mensaje"] = $acep;                
+            }
+        }else{
+            $validacion["Financiamiento"]["resultado"] = "alert-danger";
+            $validacion["Financiamiento"]["mensaje"] = "Este proyecto es financiado y no tiene gastos";
+            $puede = false;
+        }
+    }
+
+
+
+
+
+//6. Vinculacion
+    $validacion["Vinculacion"]["categoria"] = "Vinculacion:";
+    $validacion["Vinculacion"]["resultado"] = "alert-warning";
+
+    if($proyecto->vinculacion=="") {
+        if($proyecto->tvinculacion!=""){
+            $validacion["Vinculacion"]["resultado"] = "alert-danger";
+            $validacion["Vinculacion"]["mensaje"] = "Este proyecto no presenta carta de vinculacion pero dice tener vinculacion";
+            $puede = false;
+        }else{
+            $validacion["Vinculacion"]["resultado"] = "alert-success";
+            $validacion["Vinculacion"]["mensaje"] = "Este proyecto no presenta carta de vinculacion pero no dice tener vinculacion";
+        }
+    }else{
+        $validacion["Vinculacion"]["resultado"] = "alert-success";
+        $validacion["Vinculacion"]["mensaje"] = "Este proyecto presenta carta de vinculacion";
+    }
+//7. Existe Aval de academia
+    $validacion["Aval"]["categoria"] = "Aval:";
+    if($proyecto->aval=="") {
+        $puede = false;
+        $validacion["Aval"]["resultado"] = "alert-danger";
+        $validacion["Aval"]["mensaje"] = "Este proyecto no presenta aval de academia";
+
+    }else{
+        $validacion["Aval"]["resultado"] = "alert-success";
+        $validacion["Aval"]["mensaje"] = "Este proyecto presenta aval de academia";
+    }
+/////////////////    
+/////////////////
+
+        return view('someter/someter',compact('proyecto','validacion','puede'));
+    }
+
+    public function update(Request $request, $idproy)
+    {
+
+        $request->validate([
+            'ci_01' => 'required|file|max:1024',
+            'ci_02' => 'required|file|max:1024',
+
+        ]);
+
+
+        $fechaSometido = new \DateTime(); // Today
+       // ob_start();
+//        var_dump( $request->all());
+        //$result = ob_get_clean();
+        $extension01 = "";
+        $extension02 = "";
+        $extension01 = $request->file('ci_01')->getClientOriginalExtension();
+        $extension02 = $request->file('ci_02')->getClientOriginalExtension();
+        $fileName01 = $idproy . '_ci01' . '.' . $extension01;
+        $fileName02 = $idproy . '_ci02' . '.' . $extension02;
+        $path01 = Storage::putFileAs(
+            '', $request->file('ci_01'), $fileName01
+        );
+        $path02 = Storage::putFileAs(
+            '', $request->file('ci_02'), $fileName02
+        );
+
+        $proyecto= Someter::find($idproy);
+        $proyecto->sometido = $fechaSometido->format('Y-m-d');
+        $proyecto->ci01 = $path01;
+        $proyecto->ci02 = $path02;
+        $proyecto->save();
+        return redirect('home')->with('success', "El proyecto \"$proyecto->titulo\" ha sido sometido en fecha \"$proyecto->sometido\".");
+          //   return redirect('home')->with('success', "$result");
+    }
+
+
+
+
+}
+
+--------------./Investigador/VinculacionController.php--------------
+<?php
+
+namespace App\Http\Controllers\Investigador;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Http\File;
+use Illuminate\Support\Facades\Storage;
+use App\Models\Proyecto;
+use App\Models\Vinculacion;
+
+class VinculacionController extends Controller
+{
+    public function __construct()
+    {
+        $this->middleware('role:Investigador');
+    }
+
+    public function mostrar($idproy)
+    {
+        $vinculacion= Vinculacion::find($idproy);
+        $proyecto= Proyecto::find($idproy);
+        return view('vinculacion/show',compact('proyecto','vinculacion'));
+    }
+    public function agregar(Request $request)
+    {
+        $idproy = $request->input('proyecto_id');
+        $file = $request->file('evidencia');
+        $extension = "";
+        $extension = $file->getClientOriginalExtension();
+        $fileName = $idproy . '_vinculacion' . '.' . $extension;
+        $path = Storage::putFileAs(
+            '', $request->file('evidencia'), $fileName
+        );
+        $Vinculacion= Vinculacion::find($idproy);
+        $Vinculacion->vinculacion = $path;
+        $Vinculacion->save();
+        $path = public_path() . '/evidencias' . $path;
+        $Retornar = array(
+            'fileName' => $fileName,
+            'proyecto_id' => $idproy,
+
+        );
+        return response()->json($Retornar);
+    }
+
+
+    public function eliminar(Request $request)
+    {
+        $Vinculacion = Vinculacion::find( $request->input('proyecto_id') );
+        $fileName = $Vinculacion->vinculacion;
+        $archivo = public_path() .'/evidencias/'.$fileName;
+        $ret = "--";
+
+        if (Storage::disk('local')->exists($fileName) ) {
+            //return response()->download($url);
+            $ret = Storage::disk('local')->delete($fileName) ;
+            if($ret) $Vinculacion->Vinculacion = null;
+            $Vinculacion->save();
+            $realizado = "si";
+
+        }else $realizado = "no";
+
+        $arrayName = array('id' =>  $request->input('proyecto_id'),'realizado' => $ret , 'archivo'=> $archivo);
+        return response()->json( $arrayName );
+    }
+
+
+
+
+    public function update(Request $request, $idproy)
+    {
+//        return redirect('home')->with('success', 'Information del protocolo ha sido actualizada');
+        //return redirect()->back()->with('success', 'Information del protocolo ha sido actualizada');
+    }
+
+}
+
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+
+class CheckRole
+{
+    /**
+     * Handle the incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  string  $role
+     * @return mixed
+     */
+    public function handle($request, Closure $next, $role)
+    {
+
+
+        if ( $request->user()->rol != $role ) {
+            // Redirect...
+            return redirect('home');
+        }
+
+        return $next($request);
+    }}
